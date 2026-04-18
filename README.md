@@ -53,7 +53,6 @@ docker compose up -d
 |---------------------|----------|---------|-------------|
 | `PROXMOX_URL` | Yes | - | Proxmox API URL (e.g., `https://pve.local:8006`) |
 | `PROXMOX_INSECURE` | No | `false` | Skip TLS verification for Proxmox |
-| `PROXY_API_KEY` | Yes | - | API key for authenticating to the proxy |
 | `PROXY_LISTEN_ADDR` | No | `:8443` | Address to listen on |
 | `SNIPPET_STORAGE_MAP` | Yes | - | Storage ID to path mapping (e.g., `local=/var/lib/vz,nfs=/mnt/nfs`) |
 | `SNIPPET_STORAGE_PATH` | No | - | Shorthand for `local=<path>` |
