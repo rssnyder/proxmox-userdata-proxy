@@ -1,0 +1,37 @@
+services:
+  proxy:
+    build: .
+    ports:
+      - "8443:8443"
+    volumes:
+      # Mount your NFS storage that contains the snippets directory
+      # Example: NFS share mounted on host at /mnt/pve/nfs-storage
+      - /mnt/pve/nfs-storage:/mnt/pve/${STORAGE_ID}
+    user: root
+    environment:
+      # Required: Proxmox API connection
+      - PROXMOX_URL=${PM_URL:-https://proxmox.example.com:8006}
+      - PROXMOX_INSECURE=true  # Set to false in production with valid certs
+
+      # Required: API key for authenticating to this proxy
+      - PROXY_API_KEY=${PROXY_KEY:-supersecret}
+
+      # Required: Map Proxmox storage IDs to filesystem paths
+      # Format: storage_id=/path,storage_id2=/path2
+      - SNIPPET_STORAGE_MAP=${STORAGE_ID}=/mnt/pve/${STORAGE_ID}
+
+      # Optional: Server settings
+      - PROXY_LISTEN_ADDR=:8443
+      - LOG_LEVEL=info
+
+      # Optional: TLS (recommended for production)
+      # - TLS_CERT_FILE=/certs/server.crt
+      # - TLS_KEY_FILE=/certs/server.key
+    # volumes for TLS certs if needed:
+    # - ./certs:/certs:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8443/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
